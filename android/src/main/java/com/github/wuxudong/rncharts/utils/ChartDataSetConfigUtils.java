@@ -1,26 +1,25 @@
 package com.github.wuxudong.rncharts.utils;
 
-import android.graphics.drawable.GradientDrawable;
-
-import com.facebook.react.bridge.ReadableArray;
 import com.facebook.react.bridge.ReadableMap;
 import com.facebook.react.bridge.ReadableType;
+import com.facebook.react.views.text.ReactFontManager;
 import com.github.mikephil.charting.charts.Chart;
 import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.BarLineScatterCandleBubbleDataSet;
 import com.github.mikephil.charting.data.DataSet;
 import com.github.mikephil.charting.data.LineRadarDataSet;
 import com.github.mikephil.charting.data.LineScatterCandleRadarDataSet;
+import com.github.mikephil.charting.formatter.IndexAxisValueFormatter;
 import com.github.mikephil.charting.formatter.LargeValueFormatter;
 import com.github.mikephil.charting.formatter.PercentFormatter;
 import com.github.wuxudong.rncharts.charts.CustomFormatter;
 import com.github.wuxudong.rncharts.charts.DateFormatter;
 import com.github.wuxudong.rncharts.charts.IndexValueFormatter;
-import com.github.wuxudong.rncharts.charts.LabelByXValueFormatter;
 
-import java.util.HashMap;
+import android.graphics.Typeface;
+import android.graphics.drawable.GradientDrawable;
+
 import java.util.Locale;
-import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -80,24 +79,7 @@ public class ChartDataSetConfigUtils {
                 if (BridgeUtils.validate(config, ReadableType.String, "timeUnit")) {
                     timeUnit = TimeUnit.valueOf(config.getString("timeUnit").toUpperCase());
                 }
-
-                Locale locale = Locale.getDefault();
-
-                if (BridgeUtils.validate(config, ReadableType.String, "locale")) {
-                    locale = Locale.forLanguageTag(config.getString("locale"));
-                }
-
-                dataSet.setValueFormatter(new DateFormatter(valueFormatterPattern, since, timeUnit, locale));
-            } else if ("labelByXValue".equals(valueFormatter)) {
-                ReadableArray valueFormatterLabels = config.getArray("valueFormatterLabels");
-
-                Map<Float, String> labelsByXValue = new HashMap<>();
-                for (int index = 0; index < valueFormatterLabels.size(); index++) {
-                    ReadableMap entry = valueFormatterLabels.getMap(index);
-                    labelsByXValue.put(Float.valueOf((float) entry.getDouble("x")), entry.getString("label"));
-                }
-
-                dataSet.setValueFormatter(new LabelByXValueFormatter(labelsByXValue));
+                dataSet.setValueFormatter(new DateFormatter(valueFormatterPattern, since, timeUnit));
             } else {
                 dataSet.setValueFormatter(new CustomFormatter(valueFormatter));
             }
